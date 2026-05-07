@@ -1,5 +1,6 @@
 package com.example.Airbnb_Clone.dto;
 
+import com.example.Airbnb_Clone.annotation.ValidPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 

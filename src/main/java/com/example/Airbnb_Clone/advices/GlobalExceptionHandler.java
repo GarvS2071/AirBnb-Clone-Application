@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,7 +39,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiResponse<?>> handleInternalServerError(AuthenticationException exception){
         log.error("Unexpected error ocurred", exception);
-        ApiError apirError=ApiError.builder()
+        ApiError apiError=ApiError.builder()
                 .httpstatus(HttpStatus.UNAUTHORIZED)
                 .message(exception.getMessage())
                 .build();
@@ -80,5 +81,14 @@ public class GlobalExceptionHandler {
         return buildErrorResponseEntity(apirError);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiResponse<?>> handleInternalServerError(Throwable exception) {
+        log.error("Unexpected error ocurred", exception);
+        ApiError apiError=ApiError.builder()
+                .httpstatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                .message(exception.getMessage())
+                .build();
+        return buildErrorResponseEntity(apiError);
 
+    }
 }
